@@ -189,6 +189,12 @@ func (e *Element) Attr(name string, value string) *Element {
 	return e
 }
 
+// AddClass is same as Void.AddClass but returns a *Element.
+func (e *Element) AddClass(classes ...string) *Element {
+	e.Void.AddClass(classes...)
+	return e
+}
+
 // NonEmptyAttr is same as Void.NonEmptyAttr but returns a *Element.
 func (e *Element) NonEmptyAttr(name string, value string) *Element {
 	e.Void.NonEmptyAttr(name, value)

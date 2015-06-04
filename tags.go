@@ -7,6 +7,72 @@ import (
 	"github.com/gohtml/utils"
 )
 
+/*
+The root element.
+http://www.w3.org/TR/html5/semantics.html#the-root-element
+*/
+
+// HTML creates an HTML element with type Html.
+// http://www.w3.org/TR/html5/semantics.html#the-html-element
+func HTML(lang string) *Html {
+	return (&Html{
+		Element: Element{
+			Void: Void{tagType: HTMLTag},
+			children: []Node{
+				HEAD(),
+				BODY(),
+			},
+		},
+	}).Lang(lang)
+}
+
+/*
+Document metadata.
+http://www.w3.org/TR/html5/document-metadata.html#document-metadata
+*/
+
+// HEAD creates an HEAD element.
+// http://www.w3.org/TR/html5/document-metadata.html#the-head-element
+func HEAD() *Element {
+	return &Element{
+		Void: Void{tagType: HEADTag},
+		children: []Node{
+			META().Attr("charset", "utf-8"),
+		},
+	}
+}
+
+// TITLE creats a TITLE element.
+// http://www.w3.org/TR/html5/document-metadata.html#the-title-element
+// TODO maybe this is not necessary, force user to use Html.Title since there
+//      should not be more than one title
+func TITLE(title string) *Element {
+	return &Element{
+		Void: Void{tagType: TITLETag},
+		children: []Node{
+			T(title),
+		},
+	}
+}
+
+// BASE creates a base element.
+// http://www.w3.org/TR/html5/document-metadata.html#the-base-element
+// TODO maybe this is not necessary, force user to use Html.Base since there
+//      should not be more than one base
+func BASE(href URL, target string) *Void {
+	return (&Void{
+		tagType: BASETag,
+	}).AttrIfNotEmpty("href", string(href)).AttrIfNotEmpty("target", target)
+}
+
+// LINK creates a link element.
+// http://www.w3.org/TR/html5/document-metadata.html#the-link-element
+func LINK(href URL, rel string) *Void {
+	return (&Void{
+		tagType: LINKTag,
+	}).Attr("href", string(href)).Attr("rel", rel)
+}
+
 // The area element
 func AREA(href, alt string, shape string, coords []int) *Void {
 	area := (&Void{
@@ -17,13 +83,6 @@ func AREA(href, alt string, shape string, coords []int) *Void {
 	}
 
 	return area
-}
-
-// The base element
-func BASE(href, target string) *Void {
-	return (&Void{
-		tagType: BASETag,
-	}).AttrIfNotEmpty("href", href).AttrIfNotEmpty("target", target)
 }
 
 // The br element
@@ -97,12 +156,6 @@ func INPUT(tp, name, value string) *Void {
 	}
 
 	return v
-}
-
-func LINK(href URL, rel string) *Void {
-	return (&Void{
-		tagType: LINKTag,
-	}).Attr("href", string(href)).Attr("rel", rel)
 }
 
 func META() *Void {
@@ -241,27 +294,6 @@ func H6(children ...Node) *Element {
 	return (&Element{
 		Void: Void{tagType: H6Tag},
 	}).Child(children...)
-}
-
-func HEAD() *Element {
-	return &Element{
-		Void: Void{tagType: HEADTag},
-		children: []Node{
-			META().Attr("charset", "utf-8"),
-		},
-	}
-}
-
-func HTML(lang string) Html {
-	return Html{
-		Element: Element{
-			Void: Void{tagType: HTMLTag},
-			children: []Node{
-				HEAD(),
-				BODY(),
-			},
-		},
-	}.Lang(lang)
 }
 
 func LABEL(For string, children ...Node) *Element {
@@ -442,15 +474,6 @@ func THEAD(trs ...*Element) *Element {
 	return (&Element{
 		Void: Void{tagType: THEADTag},
 	}).ChildEls(trs...)
-}
-
-func TITLE(title string) *Element {
-	return &Element{
-		Void: Void{tagType: TITLETag},
-		children: []Node{
-			T(title),
-		},
-	}
 }
 
 func TR(children ...*Element) *Element {

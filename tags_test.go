@@ -2,9 +2,33 @@ package html
 
 import (
 	"fmt"
+	"testing"
+
+	"github.com/golangplus/testing/assert"
 
 	. "github.com/gohtml/elements"
+	. "github.com/gohtml/url"
 )
+
+func TestAllTagsOneLine(t *testing.T) {
+	// Slice of element, expected string results.
+	elementExpected := []interface{}{
+		`HTML`, HTML("en"), `<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8">`,
+		`HEAD`, HEAD(), `<meta charset="utf-8">`,
+		`TITLE`, TITLE(`The <title>`), `<title>The &lt;title&gt;</title>`,
+		`BASE`, BASE(U("", "/sub", ""), "_blank"), `<base href="/sub" target="_blank">`,
+		`LINK`, LINK(U("", "/main.css", ""), "stylesheet"), `<link href="/main.css" rel="stylesheet">`,
+	}
+
+	assert.ValueShould(t, "len(elementExpected)", len(elementExpected), len(elementExpected)%3 == 0,
+		"is not a multiple of 3")
+	for i := 2; i < len(elementExpected); i += 3 {
+		el := elementExpected[i-1].(Node)
+		assert.Equal(t, elementExpected[i-2].(string), string(NodeToHTMLNode(el, DefaultOptions)),
+			elementExpected[i])
+	}
+}
 
 func ExampleMAP() {
 	h := HTML("")

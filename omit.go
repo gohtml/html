@@ -5,6 +5,8 @@ import (
 	"github.com/gohtml/utils"
 )
 
+// Based on http://www.w3.org/TR/html5/syntax.html#syntax-tag-omission
+
 func canElementOmitStartTag(e, parent *Element, childIndex int) bool {
 	if len(e.attributes) > 0 || len(e.classes) > 0 {
 		return false
